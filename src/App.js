@@ -5,6 +5,10 @@ import useTabs from "./hooks/useTabs";
 import useTitle from "./hooks/useTitle";
 import useClick from "./hooks/useClick";
 import useConfirm from "./hooks/useConfirm";
+import usePreventLeave from "./hooks/usePreventLeave";
+import useBeforeLeave from "./hooks/useBeforeLeave";
+import useFadeIn from "./hooks/useFadeIn";
+import useNetwork from "./hooks/useNetwork";
 
 const contents = [
   {
@@ -48,9 +52,30 @@ function App() {
   const rejection = () => {
     console.log("rejection confirm");
   };
+
+  const confirmDelete = useConfirm(
+    "삭제 하시겠습니까?",
+    deleteConfirm,
+    rejection
+  );
+
+  // usePreventLeave
+  const { protect, unprotect } = usePreventLeave();
+
+  // useBeforeLeave
+  const begForLife = () => console.log("마우스가 벗어났어요.");
+  useBeforeLeave(begForLife);
+
+  // useFadeIn
+  const fadeInH1 = useFadeIn(5, 1);
+  const fadeInP = useFadeIn(8, 2);
+
+  // useNetwork
+  const handleNetworkChange = (online) => {
+    console.log(online ? "A" : "B");
+  };
   
-  
-  const confirmDelete = useConfirm("삭제 하시겠습니까?", deleteConfirm,rejection);
+  const onLine = useNetwork(handleNetworkChange);
 
   return (
     <div className="App">
@@ -76,10 +101,26 @@ function App() {
       </div>
 
       {/* useConfirm example */}
-      <div>
+      <div style={{ marginTop: "20px" }}>
         <button onClick={confirmDelete}>Delete Confirm</button>
       </div>
 
+      {/* useConfirm example */}
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={protect}>Protect</button>
+        <button onClick={unprotect}>UnProtect</button>
+      </div>
+
+      {/* useFadeIn example */}
+      <div style={{ marginTop: "20px" }}>
+        <h1 {...fadeInH1}>FadeInHead1</h1>
+        <p {...fadeInP}>Lorem</p>
+      </div>
+
+      {/* useFadeIn example */}
+      <div style={{ marginTop: "20px" }}>
+        <h1>{onLine ? "Online" : "Offline"}</h1>
+      </div>
     </div>
   );
 }

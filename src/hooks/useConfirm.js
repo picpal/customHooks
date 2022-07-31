@@ -1,14 +1,17 @@
-const useConfirm = (message,callback,rejection) => {
-  if(typeof callback !== "function"){
+const useConfirm = (message = "",onConfirm,onCancel) => {
+  if(!onConfirm || typeof onConfirm !== "function"){
+    return;
+  }
+  if(!onCancel || !typeof onCancel !== "function"){
     return;
   }
 
   const confirmAction = () => {
     // eslint-disable-next-line no-restricted-globals
     if(confirm(message)){
-      callback();
+      onConfirm();
     }else{
-      rejection();
+      onCancel();
     }
   };
   
