@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 import useInput from "./hooks/useInput";
 import useTabs from "./hooks/useTabs";
 import useTitle from "./hooks/useTitle";
@@ -9,6 +7,9 @@ import usePreventLeave from "./hooks/usePreventLeave";
 import useBeforeLeave from "./hooks/useBeforeLeave";
 import useFadeIn from "./hooks/useFadeIn";
 import useNetwork from "./hooks/useNetwork";
+import useScroll from "./hooks/useScroll";
+import useNotification from './hooks/useNotification';
+import useAxios from './hooks/useAxios';
 
 const contents = [
   {
@@ -74,11 +75,24 @@ function App() {
   const handleNetworkChange = (online) => {
     console.log(online ? "A" : "B");
   };
-  
+
+  // useScroll
+  const { y } = useScroll();
+
+  //useNetwork
   const onLine = useNetwork(handleNetworkChange);
 
+  //useNotification
+  const triggerNotifi = useNotification("알림창이 나타났습니다");
+
+  // useAxios
+  const options = {
+    url : 'https://yts.mx/api/v2/list_movies.json',
+  }
+  const {loading,error,data ,refetch} = useAxios(options);
+
   return (
-    <div className="App">
+    <div className="App" style={{ height: "1000vh" }}>
       {/* useInput example */}
       <div>
         <input type="text" placeholder="Name" {...inputObj} />
@@ -117,10 +131,23 @@ function App() {
         <p {...fadeInP}>Lorem</p>
       </div>
 
-      {/* useFadeIn example */}
-      <div style={{ marginTop: "20px" }}>
-        <h1>{onLine ? "Online" : "Offline"}</h1>
+      {/* useScroll example */}
+      <div style={{ position: "fixed", color: y > 100 ? "red" : "blue" }}>
+        <h1>Scroll</h1>
       </div>
+
+      {/* useNotification example */}
+      <div style={{marginTop:"20px" }}>
+        <button onClick={triggerNotifi}>Notification</button>
+      </div>
+
+      {/* useNotification example */}
+      <div style={{marginTop:"20px" }}>
+        <h1>{data && data.status}</h1>
+        <h2>{loading && "loading..."}</h2>
+        <button onClick={refetch}>useAxios</button>
+      </div>
+
     </div>
   );
 }
